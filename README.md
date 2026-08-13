@@ -1,5 +1,5 @@
-**Multimorbidity among older people in three African countries: a population-based cross-sectional study in The Gambia, South Africa, and Zimbabwe
-**
+
+# Multimorbidity among older people in three African countries: a population-based cross-sectional study in The Gambia, South Africa, and Zimbabwe
 
 Analysis code for the Fractures E3 multimorbidity study: a cross-sectional
 analysis of chronic conditions, their combinations, their risk factors, and
@@ -8,36 +8,14 @@ and over in The Gambia, Zimbabwe and South Africa.
 
 **Citation.**  TBC
 
-## What this code produces
-
-Sourcing `run_analysis.R` writes two Word documents:
-
-- `output/FE3_MM_main.docx` – tables 1 and 2, figures 1 to 3
-- `output/FE3_MM_supplement.docx` – supplementary tables 5 to 21 and
-  supplementary figures 2 to 8
-
-Supplementary tables 1 to 4 (country indices, condition definitions, latent
-class model specifications, STROBE checklist), supplementary figure 1 (the
-recruitment flow diagram) and figure 4 (the visual abstract) were prepared by
-hand and are not generated here. Numbering follows the published supplement, so
-those positions are left as gaps.
+**Contact:** c.calderwood@imperial.ac.uk
 
 ## Data availability
 
-No participant data are included in this repository. The analysis dataset holds
-individual-level information on HIV status, mental health diagnoses and other
-sensitive conditions from five community cohorts, and cannot be shared openly
-under the consent obtained.
+No participant data are included in this repository. Researchers can access participant-level data via data.bris, provided ethical approvals are compliant with country-specific governance regulations.
 
-Data preparation is also outside this repository. Deriving the chronic condition
-variables uses participants' free-text descriptions of their own conditions and
-medications, which are identifying. The code here begins from a prepared
-analysis dataset, specified variable by variable in
-[`assets/data_dictionary.md`](assets/data_dictionary.md), so that the analysis
-can be run against an equivalently prepared dataset.
-
-Requests for access to the underlying data should be directed to the Fractures
-E3 study group.
+Data preparation is also outside this repository. Deriving the chronic condition variables uses participants' free-text descriptions of their own conditions and medications, which are identifying. The code here begins from a prepared analysis dataset, specified variable by variable in
+[`assets/data_dictionary.md`](assets/data_dictionary.md).
 
 ## Requirements
 
@@ -47,24 +25,10 @@ E3 study group.
 `output/sessionInfo.txt` records the R and package versions of the run that
 produced the output.
 
-## Running it
-
-1. Edit the paths at the top of `run_analysis.R`: the analysis dataset and the
-   population workbook. `projdir` defaults to the working directory, so open the
-   repository as the working directory before sourcing.
-2. `source("run_analysis.R")`. It stops after writing `stata/df_forlca.dta`,
-   because the latent class output does not exist yet.
-3. Run the two do-files in `stata/`. [`stata/README.md`](stata/README.md)
-   documents the handoff in both directions, including sheet and column names.
-4. `source("run_analysis.R")` again, and it runs to completion.
-
-Output is written to `output/`, which is created if absent. Nothing outside it
-is written or removed.
-
 ## Layout
 
 ```
-run_analysis.R              entry point
+run_analysis.R              one script to source all files - update project directory, data directory and output directory
 R/00_settings/              packages, analysis parameters, colours, plot and table formatting
 R/01_functions/             shared helpers, including the site-stratified model loop
 R/02_prepare/               load and check data, export the Stata input, build standardisation weights
@@ -77,10 +41,9 @@ R/08_lca/                   table 2, figure 3, supplementary tables 11 to 17
 R/09_compile/               footnotes and the two output documents
 stata/                      latent class do-files and the handoff documentation
 assets/                     Word template, input data dictionary
-dev/                        synthetic data generator, for testing that the pipeline runs
 ```
 
-## Where each output comes from
+## Output panel items
 
 | Output | Object | Script |
 |---|---|---|
@@ -117,8 +80,6 @@ in the results text. Supplementary tables 20 and 21 give the odds ratios plotted
 in supplementary figures 7 and 8.
 
 ## Methodological notes
-
-Points a reader may want to know before interpreting the output.
 
 1. **Latent class indicator sets.** The conditions entered into the latent class
    model at each site were selected on the basis of the number of participants
