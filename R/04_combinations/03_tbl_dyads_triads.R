@@ -3,7 +3,7 @@
 # Claire Calderwood
 
 # Standardised prevalence of disease dyads and triads --------
-# Requires: temp_site, site_setting_weights, set_order, n_top_comb, sep_comb,
+# Requires: temp_site, site_setting_weights, defn_mm_display, n_top_comb, sep_comb,
 #           dp_comb, site_order
 # Creates:  df_dyads_std, df_triads_std, table_commondyads, table_commontriads,
 #           fn_commondyads, fn_commontriads
@@ -73,8 +73,13 @@ add_overall_std <- function(df_in) {
     mutate(site = factor(site, levels = site_order))
 }
 
-df_dyads_std  <- comb_std(temp_site, "w_site", set_order, k = 2) |> add_overall_std()
-df_triads_std <- comb_std(temp_site, "w_site", set_order, k = 3) |> add_overall_std()
+# All chronic conditions are considered, not only those drawn in the
+# intersection plots, so the most common combinations are the most common
+# overall rather than the most common among a displayed subset.
+defn_comb = defn_mm_display
+
+df_dyads_std  <- comb_std(temp_site, "w_site", defn_comb, k = 2) |> add_overall_std()
+df_triads_std <- comb_std(temp_site, "w_site", defn_comb, k = 3) |> add_overall_std()
 
 ## Checks --------
 # A dyad cell must equal the standardised prevalence of the two conditions
@@ -110,11 +115,12 @@ tbl_comb_std <- function(df_in, label) {
 
   df_ranked |>
     filter(combination %in% keep) |>
-    # Cells are rank followed by the standardised percentage in brackets, not a
-    # raw count
+    # Cells are rank, then the observed number of participants with the
+    # combination and the standardised prevalence
     mutate(cell = if_else(
       is.na(prev_pct), NA_character_,
-      paste0(rank, " (", trimws(format(round(prev_pct, dp_comb), nsmall = dp_comb)), "%)"))) |>
+      paste0(rank, " (", n_obs, ", ",
+             trimws(format(round(prev_pct, dp_comb), nsmall = dp_comb)), "%)"))) |>
     select(site, combination, cell) |>
     pivot_wider(names_from = site, values_from = cell) |>
     mutate(combination = factor(combination, levels = ord)) |>
@@ -132,15 +138,17 @@ table_commontriads <- tbl_comb_std(df_triads_std, label = "Triad")
 
 # Footnotes --------
 fn_comb_std_base = paste0(
-  "The value in brackets is the age- and sex-standardised prevalence (%), that is the ",
-  "proportion of the national population aged 40 years and over expected to have at ",
-  "least the conditions listed, by direct standardisation to national population ",
-  "structure (sex by ", paste(age_strata, collapse = ", "), " years). Combinations are ",
+  "Presented as rank within column (number of participants with the combination, ",
+  "age- and sex-standardised prevalence). The percentage is the proportion of the ",
+  "national population aged 40 years and over expected to have at least the conditions ",
+  "listed, by direct standardisation to national population structure (sex by ",
+  paste(age_strata, collapse = ", "), " years); the number is the observed count in the ",
+  "study population and is not standardised. Combinations are ",
   "not exclusive: a participant with more conditions than the number listed contributes ",
   "to every combination they have, so a participant may be counted in several rows and ",
-  "prevalences do not sum to 100%. Conditions considered are the ", length(set_order),
-  " shown in figure 1; note that figure 1 shows exclusive combinations and is therefore ",
-  "not directly comparable with this table. Missing condition status is treated as the ",
+  "prevalences do not sum to 100%. All ", length(defn_comb), " chronic conditions are ",
+  "considered. This table is not directly comparable with figure 1, which shows exclusive ",
+  "combinations among a subset of conditions. Missing condition status is treated as the ",
   "condition being absent. Combinations shown are those ranking in the top ", n_top_comb,
   " overall or within at least one site, ordered by overall rank. Header numbers show ",
   "the number of participants included in the standardised analysis, that is those aged ",
