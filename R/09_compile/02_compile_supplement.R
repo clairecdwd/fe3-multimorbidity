@@ -192,13 +192,15 @@ doc_supp <- read_docx(template_docx) |>
 
   ## Supplementary tables 18 and 19 - new --------
   supp_caption(paste("Supplementary table 18: Common disease dyads by site, presented as",
-                     "rank (age- and sex-standardised prevalence)")) |>
+                     "rank (number of participants, age- and sex-standardised",
+                     "prevalence)")) |>
   body_add_flextable(table_commondyads) |>
   add_footnote(fn_commondyads) |>
   body_add_break() |>
 
   supp_caption(paste("Supplementary table 19: Common disease triads by site, presented as",
-                     "rank (age- and sex-standardised prevalence)")) |>
+                     "rank (number of participants, age- and sex-standardised",
+                     "prevalence)")) |>
   body_add_flextable(table_commontriads) |>
   add_footnote(fn_commontriads) |>
   body_end_block_section(value = block_section(property = ps_portrait)) |>
